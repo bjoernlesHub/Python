@@ -127,10 +127,10 @@ class TestHabitTracker:
         user_id = self.insert_test_user(path)
         print()
         if not automatic:
-            print("Please press enter for inserting 3 habits.")
+            print("Please press enter for inserting 5 habits.")
             input()
         else:
-            print("Inserting 3 habits")
+            print("Inserting 5 habits")
         self.insert_test_habits(path, user_id)
         print()
         if not automatic:
@@ -139,6 +139,8 @@ class TestHabitTracker:
         else:
             print("Edit the first habit (name, description)")
         # print(show_db_action)
+        print("before:")
+        sqlite.get_sqlite_vals_by_columns_and_values(path, "habits", "id", str(inserted_habits[0]))
         sqlite.edit_row_by_columns_and_values(path, "habits", "name, description",
                                               "tooth brushing at morning, brush your teethes!", "id",
                                               str(inserted_habits[0]), show_db_action)
@@ -182,28 +184,19 @@ class TestHabitTracker:
         """
         cols = """user_id, name, description, timespan, date_start, date_end, target_time_start, 
         target_time_end, target_duration, target_repeats, created"""
-        vals = str(
-            user_id) + ", tooth brushing, brush your toothes 3 minutes, daily, 2023-01-01, 2023-12-31, 06:00, 07:00, 00:03, 1, 2023-01-01"
-        # inserted_habits = []
-        inserted_id = sqlite.insert_to_sqlite_table(path, "habits", cols, vals, self.show_db_actions)
-        inserted_habits.append(inserted_id)
-        print("ID of the new habit: " + str(inserted_id))
-        vals = str(user_id) + ", read informatic articles, heise and so on, daily, 2023-01-01, 2023-12-31, 06:00, 07:00, 00:03, 1, 2023-01-01"
-        inserted_id = sqlite.insert_to_sqlite_table(path, "habits", cols, vals, self.show_db_actions)
-        inserted_habits.append(inserted_id)
-        print("ID of the new habit: " + str(inserted_id))
-        vals = str(user_id) + ", go jogging, something for your health!, weekly, 2023-01-01, 2023-12-31, 18:00, 19:00, 00:30, 2, 2023-01-01"
-        inserted_id = sqlite.insert_to_sqlite_table(path, "habits", cols, vals, self.show_db_actions)
-        inserted_habits.append(inserted_id)
-        print("ID of the new habit: " + str(inserted_id))
-        vals = str(user_id) + ", call your grandmother, for your family.., weekly, 2023-01-01, 2023-12-31, 17:00, 18:00, 00:30, 2, 2023-01-01"
-        inserted_id = sqlite.insert_to_sqlite_table(path, "habits", cols, vals, self.show_db_actions)
-        inserted_habits.append(inserted_id)
-        print("ID of the new habit: " + str(inserted_id))
-        vals = str(user_id) + ", go to gym, something for your health!, monthly, 2023-01-01, 2023-12-31, 18:00, 19:00, 00:30, 2, 2023-01-01"
-        inserted_id = sqlite.insert_to_sqlite_table(path, "habits", cols, vals, self.show_db_actions)
-        inserted_habits.append(inserted_id)
-        print("ID of the new habit: " + str(inserted_id))
+        vals_array = []
+        vals_array.append(str(user_id) + ", tooth brushing, brush your toothes 3 minutes, daily, 2023-01-01, 2023-12-31, 06:00, 07:00, 00:03, 1, 2023-01-01")
+        vals_array.append(str(user_id) + ", read informatic articles, heise and so on, daily, 2023-01-01, 2023-12-31, 06:00, 07:00, 00:10, 1, 2023-01-01")
+        vals_array.append(str(user_id) + ", go jogging, something for your health!, weekly, 2023-01-01, 2023-12-31, 18:00, 19:00, 00:30, 2, 2023-01-01")
+        vals_array.append(str(user_id) + ", call your grandmother, for your family.., weekly, 2023-01-01, 2023-12-31, 17:00, 18:00, 00:15, 2, 2023-01-01")
+        vals_array.append(str(user_id) + ", go to gym, something for your health!, monthly, 2023-01-01, 2023-12-31, 18:00, 19:00, 01:30, 2, 2023-01-01")
+
+        inserted_id = 0
+        for vals in vals_array:
+            inserted_id = sqlite.insert_to_sqlite_table(path, "habits", cols, vals, self.show_db_actions)
+            inserted_habits.append(inserted_id)
+            print("ID of the new habit: " + str(inserted_id))
+
 
     def insert_test_done_habits(self, path):
         """ insert done habits
