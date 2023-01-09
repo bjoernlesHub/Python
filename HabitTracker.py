@@ -63,7 +63,7 @@ def eli():
         actions.get_done_habits_of_user(path, settings_json)
 
     elif settings_json["action"] == "AnalyseData":
-        analyse.analyse_records(path, settings_json,return_json = False)
+        analyse.analyse_user_records_by_id(path, settings_json, return_json=False)
 
     elif settings_json["action"] == "ShowAll":
         test = test_project.TestHabitTracker(settings_json)

@@ -12,7 +12,7 @@ def add_user(path, settings_json):
     created = datetime.now()
 
     if name != "" and pwd != "":
-        sqlite.insert_to_sqlite_table(path, "users", "name, password, created", name + ", " + pwd + ", " + str(created))
+        sqlite.insert_to_sqlite_table(path, "users", "name, password, created, modified", name + ", " + pwd + ", " + str(created) + ", " + str(created))
 
 
 def get_user(path, settings_json):
@@ -46,6 +46,8 @@ def add_habit(path, settings_json):
     name = settings_json["habit"][0]["name"]
     description = settings_json["habit"][0]["description"]
     timespan = settings_json["habit"][0]["timespan"]
+    date_start = settings_json["habit"][0]["date_start"]
+    date_end = settings_json["habit"][0]["date_end"]
     target_time_start = settings_json["habit"][0]["target_time_start"]
     target_time_end = settings_json["habit"][0]["target_time_end"]
     target_duration = settings_json["habit"][0]["target_duration"]
@@ -54,8 +56,8 @@ def add_habit(path, settings_json):
 
     if user_id != "" and name != "" and description != "" and timespan != "" and target_time_start != "" and target_time_end != "" and target_duration != "" and target_repeats != "":
         sqlite.insert_to_sqlite_table(path, "habits",
-                                      "user_id, name, description, timespan, target_time_start, target_time_end, target_duration, target_repeats, created",
-                                      user_id + "," + name + "," + description + "," + timespan + "," + target_time_start + "," + target_time_end + "," + target_duration + "," + target_repeats + "," + created)
+                                      "user_id, name, description, timespan, date_start, date_end, target_time_start, target_time_end, target_duration, target_repeats, created",
+                                      user_id + "," + name + "," + description + "," + timespan + "," + date_start + "," + date_end + "," + target_time_start + "," + target_time_end + "," + target_duration + "," + target_repeats + "," + created)
     else:
         print("At least one value of habits isn't setted.")
 

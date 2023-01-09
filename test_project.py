@@ -38,12 +38,27 @@ class TestHabitTracker:
         :param path: path to database file
         :return: no return, just some text
         """
+        if self.automatic_tests == "true" or self.automatic_tests == "True":
+            print("--- AUTOMATIC TESTS ---")
+        print("-------------------------------------")
         print("Test Database")
+        print("-------------------------------------")
         print()
-        self.test_database(path, self.show_db_actions, self.automatic_tests)
+        self.test_database(path, self.show_db_actions)
+
+        print("-------------------------------------")
+        print("Test user related actions")
+        print("-------------------------------------")
         print()
-        #self.test_user_actions(path, self.settings_json, self.automatic_tests)
-        analyse.analyse_records(path, self.settings_json)
+        self.test_user_actions(path, self.settings_json)
+
+        #print(self.settings_json["user"][0]["user_id"])
+        print("-------------------------------------")
+        print("Analyse all produced data of test-user")
+        print("-------------------------------------")
+        print()
+
+        analyse.analyse_user_records_by_id(path, self.settings_json)
         if self.settings_json["runtime_settings"][0]["automatic_tests"] == "True":
             files.delete_file(path)
             print("Test-database deleted.")
@@ -57,7 +72,7 @@ class TestHabitTracker:
         print()
         print(":) :) :) Everything went well as possible!!! :) :) :)")
 
-    def test_user_actions(self, path, settings_json, automatic=False):
+    def test_user_actions(self, path, settings_json):
         """ test all user actions
         :param path: path to database file, automatic: bool
         :return: no return, just some text
@@ -65,6 +80,7 @@ class TestHabitTracker:
         print("Create User 'TestUser'")
         settings_json["user"][0]["user_name"] = "TestUser"
         settings_json["user"][0]["user_password"] = "TestPassword12$%&"
+        automatic = self.automatic_tests
         if not automatic:
             print("Please press enter for adding a user for login.")
             input()
@@ -80,23 +96,28 @@ class TestHabitTracker:
         user = actions.get_user(path, settings_json)
         #print(user[0])
         if len(user) > 0:
+            print("User logged in.")
             print(user)
         else:
             print("Found no user.")
+        print("user id for deleting: "+str(user[0][0]))
+        sqlite.delete_from_table_by_id(path, "users", str(user[0][0]))
+        print("Row with id " + str(user[0][0])+" deleted.")
 
-    def test_database(self, path, show_db_action, automatic=False):
+    def test_database(self, path, show_db_action):
         """ test all things you that you can test from database
         :param path: path to database file, automatic: bool
         :return: no return, just some text
         """
-        print("automatic:"+str(automatic))
-        if not automatic:
+        automatic = self.automatic_tests
+        if automatic:
+            print("Creating the table structure.")
+        else:
             print("Please press enter for creating the table structure.")
             input()
-        else:
-            print("Creating the table structure.")
         sqlite.create_tables_habittracker(path)
-        print("Tables 'users', 'habits' and 'habits_lasttime' created.")
+        print("Tables 'users', 'habits' and 'habits_lasttime' created in SQLite file.")
+        print("Located at path: "+str(path))
         print()
         if not automatic:
             print("Please press enter for inserting user.")

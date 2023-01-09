@@ -1,4 +1,4 @@
-def analyse_records(path, settings_json, return_json="True"):
+def analyse_user_records_by_id(path, settings_json, return_json="True"):
     """
     Calculate the event of the counter
 
@@ -40,11 +40,15 @@ def analyse_records(path, settings_json, return_json="True"):
             target_duration = datetime.strptime(habit[9], '%H:%M').time()
             target_repeats = int(habit[10])
 
-
+            full_target_duration = timedelta()
+            x = target_repeats
+            while x != 0:
+                full_target_duration = full_target_duration + timedelta(hours=target_duration.hour, minutes=target_duration.minute)
+                x = x - 1
 
             print()
-            print("Name of Habit: " + habit_name)
-            print("Habit done last: ")
+            print("Habit: " + habit_name+" ("+habit_description+")")
+            print("Habit done last times: ")
             habit_dones = sqlite.get_sqlite_vals_by_columns_and_values(path, "habits_lasttime", "habit_id",
                                                                        str(habit_id), show_db_actions)
 
@@ -54,34 +58,35 @@ def analyse_records(path, settings_json, return_json="True"):
             actions_left = str(target_repeats-actions_count)
             print(str(days_since.days) + " days since startdate. (" + str(start_date) + ")")
             print("days left: " + str(days_left.days) + " to enddate. ("+str(end_date)+")")
-            print("You have "+str(actions_count)+" of "+str(target_repeats)+" actions. (" + actions_left + " left)")
+            print("You have "+str(actions_count)+" of "+str(target_repeats)+" needed actions. (" + actions_left + " left)")
 
             print("Actions:")
-            print("Target duration: " + str(target_duration))
             counter = 0
-            minutes_added = timedelta()
+            full_done_duration = timedelta()
             for done_habit in habit_dones:
 
                 counter = counter+1
                 from_time = datetime.strptime(done_habit[2], '%Y-%m-%d %H:%M')
                 to_time = datetime.strptime(done_habit[3], '%Y-%m-%d %H:%M')
                 created = datetime.strptime(done_habit[3], '%Y-%m-%d %H:%M')
-                timespan_habit = to_time - from_time
+                timespan_done_habit = to_time - from_time
                 difference_start = from_time - datetime.combine(from_time.date(), target_time_start)
                 difference_end = datetime.combine(to_time.date(), target_time_end) - to_time
                 target_duration_delta = timedelta(hours=target_duration.hour, minutes=target_duration.minute, seconds=target_duration.second, microseconds=target_duration.microsecond)
-                difference_duration = timespan_habit - target_duration_delta
+                difference_duration = timespan_done_habit - target_duration_delta
 
-                minutes_added += timespan_habit
+                full_done_duration += timespan_done_habit
 
-                print(str(counter)+". entry (created: "+str(created)+"):")
+                print(str(counter)+". of needed "+str(target_repeats)+" entries, created: "+str(created)+"):")
                 print(done_habit)
+                print()
                 print("difference to planned start time ("+str(target_time_start)+") "+str(difference_start))
                 print("difference to planned end time (" + str(target_time_end) + ") " + str(difference_end))
+                print(str(timespan_done_habit)+" of "+str(target_duration)+" ("+str(difference_duration)+")")
+                print("-------------------------------------------------------------------")
                 print()
-                print(str(timespan_habit)+" minutes of "+str(target_duration)+" ("+str(difference_duration)+")")
-                print()
-                #[habit_name].append(done_habit)
+                # [habit_name].append(done_habit)
+            print("Full duration: "+str(full_done_duration)+" (of total "+str(full_target_duration)+")")
             print()
     #if return_json:
     #    return json.dumps(rows)

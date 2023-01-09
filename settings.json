@@ -33,6 +33,7 @@
 	"runtime_settings": [
 		{
 			"wait": "0",
+			"show_messages": "false",
 			"show_db_actions": "false",
 			"automatic_tests": "true",
 			"return_json": "true"

@@ -98,6 +98,32 @@ def delete_last_row(path, table, show_action=False):
                 print("The SQLite connection is closed")
 
 
+def delete_from_table_by_id(path, table, row_id, show_action=False):
+    """ delete rows from table older a week
+    :param show_action: True if you want to see the quered actions
+    :param row_id: id of row
+    :param table: table from database
+    :param path: path to database file
+    :return: None
+    """
+    try:
+        sqlite_connection = create_connection(path)
+        cursor = sqlite_connection.cursor()
+        sql = "DELETE FROM "+table+" WHERE id = "+str(row_id)
+        if show_action:
+            print(sql)
+        cursor.execute(sql)
+        sqlite_connection.commit()
+        if show_action:
+            print(cursor.rowcount, " SQLITE record(s) deleted")
+    except sqlite3.Error as error:
+        print("Failed to delete from table", error)
+    finally:
+        if sqlite_connection:
+            sqlite_connection.close()
+            if show_action:
+                print("The SQLite connection is closed")
+
 def delete_old_rows(path, table, datetime_column, show_action=False):
     """ delete rows from table older a week
     :param show_action: True if you want to see the quered actions
