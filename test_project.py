@@ -53,6 +53,7 @@ class TestHabitTracker:
         self.test_user_actions(path, self.settings_json)
 
         #print(self.settings_json["user"][0]["user_id"])
+        print()
         print("-------------------------------------")
         print("Analyse all produced data of test-user")
         print("-------------------------------------")
@@ -146,10 +147,10 @@ class TestHabitTracker:
                                               str(inserted_habits[0]), show_db_action)
         print()
         if not automatic:
-            print("Please press enter for inserting 4 done habits.")
+            print("Please press enter for inserting 6 done habits.")
             input()
         else:
-            print("Inserting 4 done habits.")
+            print("Inserting 6 done habits.")
         self.insert_test_done_habits(path)
         print()
         if not automatic:
